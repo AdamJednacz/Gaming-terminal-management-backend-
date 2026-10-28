@@ -1,0 +1,31 @@
+
+
+
+Database:
+ - Encje :
+        - user / ktoś się musi logować do apki  uiid, email, password_hash , role
+            User  
+        - terminals id, serial_number, location_id, status, software_version, last_seen_at
+            Terminal - one to many incident , one to many  locations , one to one telemetry , many to many useres 
+        - locations  id, name, city, address
+            Location - many to many terminals 
+        - terminals events id, terminal_id, event_type, message, created_at
+            Terminals Event many to one terminal 
+        - incidents id, terminal_id, assigned_user_id, status, priority, description
+            Incident one to many terminals
+        - telemetry id, terminal_id, cpu_usage, memory_usage, temperature, recorded_at
+            
+REST API
+
+POST  /auth/login 
+GET   /terminals
+POST  /terminals
+GET   /terminals/:id
+PATCH /terminals/:id
+GET   /terminals/:id/events
+POST  /telemetry/heartbeat
+GET   /dashboard/summary
+POST  /incidents
+PATCH /incidents/:id
+
+        
