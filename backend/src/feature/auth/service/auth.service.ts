@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   ConflictException,
   Injectable,
   UnauthorizedException,
@@ -23,7 +24,7 @@ export class AuthService {
   ) {}
   public async signUp(payload: UserPostSchema): Promise<UserModel> {
     if (!payload.termsOfService) {
-      throw new Error('terms of service need to be accepted');
+      throw new BadRequestException('Terms of service need to be accepted');
     }
     const emailTaken = await this.userRepository.exists({
       where: { email: payload.email },
