@@ -21,6 +21,7 @@ class UserPostSchema {
   @IsString()
   @MaxLength(64)
   @MinLength(2)
+  @Transform(({ value }: { value: string }) => value?.toUpperCase())
   firstName: string;
 
   @ApiProperty({
@@ -30,6 +31,7 @@ class UserPostSchema {
   @IsString()
   @MaxLength(64)
   @MinLength(2)
+  @Transform(({ value }: { value: string }) => value?.toUpperCase())
   lastName: string;
 
   @ApiProperty({

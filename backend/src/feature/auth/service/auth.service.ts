@@ -30,7 +30,7 @@ export class AuthService {
       where: { email: payload.email },
     });
     if (emailTaken) {
-      throw new ConflictException('Emails already in use');
+      throw new ConflictException('Email already in use');
     }
 
     const hashedPassword = await this.cryptoService.hash(payload.password);
@@ -74,6 +74,14 @@ export class AuthService {
 
     const accessToken = await this.jwtService.signAsync(tokenPayload);
 
-    return { accessToken, uuid: currentUser.uuid, email: currentUser.email };
+    return { accessToken };
+  }
+
+  async getMe(email: string): Promise<UserModel> {
+    const userEntity = await selectOrThrow(
+      this.userRepository.selectByEmail(email),
+      new UnauthorizedException('User no longer exists'),
+    );
+    return UserModel.fromEntity(userEntity);
   }
 }
