@@ -4,7 +4,7 @@ import { ApiTags } from '@nestjs/swagger';
 import { Endpoint } from '../../../shared/decorator/endpoint.decorator';
 import { HttpMethod } from '../../../shared/enums/http-method.enum';
 import { Paths } from '../../../shared/enums/path.enums';
-import { Body, HttpStatus, Req, Res, UseGuards } from '@nestjs/common';
+import { Body, HttpStatus, Res, UseGuards } from '@nestjs/common';
 import UserPostSchema from '../../../shared/schema/user-post.schema';
 import { UserModel } from '../../../shared/model/user.model';
 import type { ApiResponse } from '../../../shared/types/api-response.type';
@@ -14,6 +14,8 @@ import AuthLoginSchema from '../../../shared/schema/auth-login.schema';
 import { TokensModel } from '../../../shared/model/token.model';
 import { LocalAuthGuard } from '../guard/local-auth.guard';
 import { JwtAuthGuard } from '../guard/jwt-auth.guard';
+import { CurrentUser } from '../../../shared/decorator/currentUser.decorator';
+import type { JwtPayload } from '../../../shared/types/jwt-payload';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -50,8 +52,9 @@ export class AuthController {
     responseSchema: TokensModel,
     description: 'Authenticates a user and returns access and refresh tokens',
   })
-  async signIn(@Body() payload: AuthLoginSchema) {
-    return this.authService.signIn(payload);
+  async signIn(@Res() res: Response, @Body() payload: AuthLoginSchema) {
+    const responseObject = await this.authService.signIn(payload);
+    return res.send(responseObject);
   }
 
   @UseGuards(JwtAuthGuard)
@@ -61,8 +64,10 @@ export class AuthController {
     responseSchema: UserModel,
     description: 'Retrieves the currently authenticated user information',
   })
-  authMe(@Req() req: Request) {
-    console.log('Inside authController status method');
-    console.log(req.user);
+  async authMe(@Res() res: Response, @CurrentUser() user: JwtPayload) {
+    const responseObject = await this.authService.getMe(user.email);
+    return res.send(responseObject);
   }
 }
+
+//błędy posprawdzać obsługa błedów-

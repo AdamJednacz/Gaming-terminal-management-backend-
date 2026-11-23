@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
-import { UserModel } from '../../../shared/model/user.model';
+import { JwtPayload } from '../../../shared/types/jwt-payload';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
@@ -13,9 +13,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       secretOrKey: configService.getOrThrow<string>('JWT_SECRET'),
     });
   }
-  validate(payload: UserModel) {
-    console.log('Inside JWT STRATEGY VALIDATE');
-    console.log(payload);
+  validate(payload: JwtPayload) {
     return payload;
   }
 }
